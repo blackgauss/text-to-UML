@@ -1,11 +1,12 @@
-"""Default workflow: route → refine → generate → validate."""
+"""Default workflow: route → refine → constrain → generate → validate."""
 
 from .. import Pipeline, register
-from ..steps import route, refine, generate, validate_and_repair
+from ..steps import route, refine, constrain, generate, validate_and_repair
 
 register("default", Pipeline([
     route,
     refine,
+    constrain,
     generate,
     validate_and_repair,
 ]))

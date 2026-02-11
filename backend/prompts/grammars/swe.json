@@ -1,0 +1,42 @@
+{
+  "domain": "swe",
+  "description": "Software Engineering — services, APIs, databases, application architecture",
+  "node_types": [
+    {"id": "CLIENT",        "label": "Client",          "desc": "Browser, mobile app, CLI, or external caller",  "shape": "stadium"},
+    {"id": "GATEWAY",       "label": "API Gateway",     "desc": "Entry point: load balancer, reverse proxy, API gateway", "shape": "rectangle"},
+    {"id": "SERVICE",       "label": "Service",         "desc": "Backend service, microservice, or server process", "shape": "rectangle"},
+    {"id": "WORKER",        "label": "Worker",          "desc": "Async background job processor",                "shape": "rectangle"},
+    {"id": "DATABASE",      "label": "Database",        "desc": "Relational or document store (Postgres, Mongo, etc.)", "shape": "cylinder"},
+    {"id": "CACHE",         "label": "Cache",           "desc": "In-memory store (Redis, Memcached)",            "shape": "cylinder"},
+    {"id": "QUEUE",         "label": "Message Queue",   "desc": "Broker or stream (Kafka, RabbitMQ, SQS)",      "shape": "parallelogram"},
+    {"id": "STORAGE",       "label": "Object Storage",  "desc": "Blob / file store (S3, GCS)",                  "shape": "cylinder"},
+    {"id": "THIRD_PARTY",   "label": "Third-Party API", "desc": "External vendor service (Stripe, Twilio, etc.)", "shape": "stadium"},
+    {"id": "AUTH",          "label": "Auth Provider",   "desc": "Identity / auth service (OAuth, SAML, JWT issuer)", "shape": "rectangle"},
+    {"id": "CDN",           "label": "CDN",             "desc": "Content delivery network for static assets",    "shape": "rectangle"},
+    {"id": "SCHEDULER",     "label": "Scheduler",       "desc": "Cron, periodic task runner",                    "shape": "rectangle"}
+  ],
+  "valid_connections": [
+    {"from": "CLIENT",       "to": "GATEWAY",      "label": "HTTP / WebSocket"},
+    {"from": "CLIENT",       "to": "CDN",           "label": "static assets"},
+    {"from": "GATEWAY",      "to": "SERVICE",       "label": "route request"},
+    {"from": "GATEWAY",      "to": "AUTH",          "label": "verify token"},
+    {"from": "SERVICE",      "to": "SERVICE",       "label": "internal RPC / REST"},
+    {"from": "SERVICE",      "to": "DATABASE",      "label": "query / write"},
+    {"from": "SERVICE",      "to": "CACHE",         "label": "get / set"},
+    {"from": "SERVICE",      "to": "QUEUE",         "label": "publish event"},
+    {"from": "SERVICE",      "to": "STORAGE",       "label": "upload / download"},
+    {"from": "SERVICE",      "to": "THIRD_PARTY",   "label": "API call"},
+    {"from": "SERVICE",      "to": "AUTH",          "label": "validate / issue token"},
+    {"from": "QUEUE",        "to": "WORKER",        "label": "consume message"},
+    {"from": "QUEUE",        "to": "SERVICE",       "label": "consume event"},
+    {"from": "WORKER",       "to": "DATABASE",      "label": "query / write"},
+    {"from": "WORKER",       "to": "STORAGE",       "label": "upload / download"},
+    {"from": "WORKER",       "to": "QUEUE",         "label": "publish result"},
+    {"from": "WORKER",       "to": "THIRD_PARTY",   "label": "API call"},
+    {"from": "SCHEDULER",    "to": "WORKER",        "label": "trigger job"},
+    {"from": "SCHEDULER",    "to": "SERVICE",       "label": "trigger endpoint"},
+    {"from": "CDN",          "to": "STORAGE",       "label": "origin pull"},
+    {"from": "DATABASE",     "to": "CACHE",         "label": "cache-aside fill"},
+    {"from": "CACHE",        "to": "SERVICE",       "label": "cache hit"}
+  ]
+}
