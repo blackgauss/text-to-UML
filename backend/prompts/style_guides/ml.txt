@@ -1,0 +1,38 @@
+## Machine Learning Engineering Style Guide
+
+Supplement to the general style guide. Apply these when the prompt describes
+ML pipelines, training workflows, model architectures, or data processing.
+
+### Entities
+- Distinguish between data sources (annotated rectangle or cylinder),
+  processing/transform steps (rectangle), models (rounded rectangle or bold
+  border), and outputs/artifacts (parallelogram or note).
+- Name nodes by their function: FeatureStore, Tokenizer, FineTune, Evaluate —
+  not generic labels like "Step 2".
+- If a model registry, experiment tracker, or orchestrator (Airflow, Kubeflow)
+  is mentioned, show it as an explicit node.
+
+### Interactions
+- Label arrows with what flows between steps: raw data, feature vectors,
+  gradients, predictions, metrics.
+- Show the distinction between training-time and inference-time paths clearly.
+  Use subgraphs or separate swim-lanes if both paths appear.
+- Use dashed arrows for optional or conditional paths (hyperparameter search,
+  fallback model, human-in-the-loop review).
+
+### Patterns
+- For training pipelines, arrange left-to-right: Data → Preprocess → Train →
+  Evaluate → Register. Branch off Evaluate for failure/retrain loops.
+- For inference pipelines, show: Input → Preprocess → Model → Postprocess →
+  Response. Include any caching or batching layer if mentioned.
+- For architecture diagrams (e.g. transformer blocks), use subgraphs for
+  repeated layers and notes for tensor shapes where relevant.
+- For experiment tracking, show the feedback loop: Train → Log Metrics →
+  Compare → Promote.
+
+### Common mistakes to avoid
+- Do not create a node for "tensor", "batch", or "embedding" — these are data
+  flowing on edges, not actors.
+- Do not collapse the entire pipeline into a single "ML Model" node; show the
+  stages that the prompt describes.
+- Do not omit the data source; every ML diagram should show where data enters.

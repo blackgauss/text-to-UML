@@ -9,6 +9,7 @@ from .pipeline import (
     generate,
     passthrough,
     refine,
+    route,
     validate_and_repair,
 )
 from .providers import OpenAIProvider, OllamaProvider, build_provider
@@ -30,5 +31,6 @@ __all__ = [
     "load_dotenv",
     "passthrough",
     "refine",
+    "route",
     "validate_and_repair",
 ]

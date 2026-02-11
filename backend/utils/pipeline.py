@@ -25,9 +25,17 @@ class StepFn(Protocol):
     def __call__(self, ctx: PipelineContext, provider: LLMProvider) -> None: ...
 
 
+def route(ctx: PipelineContext, provider: LLMProvider) -> None:
+    _log("Routing domain...")
+    domain = provider.route_domain(ctx.raw_text)
+    ctx.metadata["domain"] = domain
+    _log(f"Domain: {domain}")
+
+
 def refine(ctx: PipelineContext, provider: LLMProvider) -> None:
     _log("Refining input...")
-    ctx.spec = provider.refine_input(ctx.raw_text)
+    domain = ctx.metadata.get("domain", "general")
+    ctx.spec = provider.refine_input(ctx.raw_text, domain=domain)
     if len(ctx.spec) > 2000:
         ctx.spec = ctx.spec[:2000] + "\n[truncated]"
     _log(f"Refined spec ({len(ctx.spec)} chars)")
@@ -40,8 +48,9 @@ def passthrough(ctx: PipelineContext, _provider: LLMProvider) -> None:
 
 def generate(ctx: PipelineContext, provider: LLMProvider) -> None:
     _log("Generating diagram...")
+    domain = ctx.metadata.get("domain", "general")
     request = DiagramRequest(raw_text=ctx.spec, diagram_type=ctx.diagram_type)  # type: ignore[arg-type]
-    ctx.artifact = provider.generate_diagram(request)
+    ctx.artifact = provider.generate_diagram(request, domain=domain)
     _log("Initial diagram generated")
 
 
@@ -94,6 +103,7 @@ class Pipeline:
 
 def default_pipeline(skip_refine: bool = False) -> Pipeline:
     return Pipeline([
+        route,
         passthrough if skip_refine else refine,
         generate,
         validate_and_repair,
