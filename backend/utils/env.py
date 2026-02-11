@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 def load_dotenv() -> None:
-    for candidate in [Path.cwd() / ".env", Path(__file__).resolve().parents[3] / ".env"]:
+    for candidate in [Path.cwd() / ".env", Path(__file__).resolve().parents[2] / ".env"]:
         if candidate.exists():
             _parse(candidate)
             return
