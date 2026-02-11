@@ -1,0 +1,43 @@
+{
+  "domain": "ml",
+  "description": "Machine Learning Engineering — training pipelines, inference, experiment tracking",
+  "node_types": [
+    {"id": "DATA_SOURCE",       "label": "Data Source",       "desc": "Origin of raw data (database, API, file store, stream)", "shape": "cylinder"},
+    {"id": "DATA_TRANSFORM",    "label": "Data Transform",    "desc": "Cleaning, feature engineering, tokenisation, augmentation", "shape": "rectangle"},
+    {"id": "DATASET",           "label": "Dataset",           "desc": "Versioned, immutable snapshot ready for training or eval", "shape": "rectangle"},
+    {"id": "MODEL",             "label": "Model",             "desc": "Trainable or trained ML model (NN, tree, etc.)", "shape": "rounded"},
+    {"id": "TRAINER",           "label": "Trainer",           "desc": "Training loop / fine-tuning process", "shape": "rectangle"},
+    {"id": "EVALUATOR",         "label": "Evaluator",         "desc": "Metric computation, validation, test-set scoring", "shape": "rectangle"},
+    {"id": "REGISTRY",          "label": "Model Registry",    "desc": "Versioned model store (MLflow, Weights & Biases, etc.)", "shape": "cylinder"},
+    {"id": "SERVING",           "label": "Serving Endpoint",  "desc": "Inference API or batch-prediction job", "shape": "rectangle"},
+    {"id": "MONITOR",           "label": "Monitor",           "desc": "Drift detection, performance alerting, logging", "shape": "rectangle"},
+    {"id": "ORCHESTRATOR",      "label": "Orchestrator",      "desc": "Workflow scheduler (Airflow, Kubeflow, Dagster)", "shape": "rectangle"},
+    {"id": "EXPERIMENT_TRACKER","label": "Experiment Tracker", "desc": "Logs params, metrics, artifacts per run", "shape": "cylinder"},
+    {"id": "HUMAN",             "label": "Human / Reviewer",  "desc": "Human-in-the-loop labelling, review gate", "shape": "stadium"}
+  ],
+  "valid_connections": [
+    {"from": "DATA_SOURCE",        "to": "DATA_TRANSFORM",   "label": "raw data"},
+    {"from": "DATA_TRANSFORM",     "to": "DATASET",          "label": "processed features"},
+    {"from": "DATA_TRANSFORM",     "to": "DATA_TRANSFORM",   "label": "chained transform"},
+    {"from": "DATASET",            "to": "TRAINER",           "label": "train / val split"},
+    {"from": "DATASET",            "to": "EVALUATOR",         "label": "test split"},
+    {"from": "DATASET",            "to": "SERVING",           "label": "batch input"},
+    {"from": "MODEL",              "to": "TRAINER",           "label": "base weights"},
+    {"from": "TRAINER",            "to": "MODEL",             "label": "trained weights"},
+    {"from": "TRAINER",            "to": "EVALUATOR",         "label": "candidate model"},
+    {"from": "TRAINER",            "to": "EXPERIMENT_TRACKER","label": "log metrics"},
+    {"from": "EVALUATOR",          "to": "REGISTRY",          "label": "promoted model"},
+    {"from": "EVALUATOR",          "to": "TRAINER",           "label": "retrain signal"},
+    {"from": "EVALUATOR",          "to": "EXPERIMENT_TRACKER","label": "eval results"},
+    {"from": "REGISTRY",           "to": "SERVING",           "label": "deploy artifact"},
+    {"from": "SERVING",            "to": "MONITOR",           "label": "predictions / logs"},
+    {"from": "MONITOR",            "to": "TRAINER",           "label": "retrain trigger"},
+    {"from": "MONITOR",            "to": "HUMAN",             "label": "alert / review"},
+    {"from": "HUMAN",              "to": "DATASET",           "label": "labels / corrections"},
+    {"from": "HUMAN",              "to": "EVALUATOR",         "label": "approval gate"},
+    {"from": "ORCHESTRATOR",       "to": "DATA_TRANSFORM",   "label": "schedule"},
+    {"from": "ORCHESTRATOR",       "to": "TRAINER",           "label": "schedule"},
+    {"from": "ORCHESTRATOR",       "to": "EVALUATOR",         "label": "schedule"},
+    {"from": "ORCHESTRATOR",       "to": "SERVING",           "label": "deploy trigger"}
+  ]
+}
