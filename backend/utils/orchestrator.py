@@ -4,11 +4,13 @@ from __future__ import annotations
 
 import sys
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, TYPE_CHECKING
 
 from .data_models import MermaidArtifact
 from .llm import LLMProvider
-from .pipeline import Pipeline, PipelineContext, default_pipeline
+
+if TYPE_CHECKING:
+    from ..pipeline import Pipeline, PipelineContext
 
 
 @dataclass
@@ -21,16 +23,26 @@ class Orchestrator:
     def __init__(
         self,
         provider: LLMProvider,
-        pipeline: Pipeline | None = None,
+        pipeline: Pipeline | str | None = None,
         *,
         max_retries: int = 3,
         skip_refine: bool = False,
     ):
+        from ..pipeline import Pipeline as _Pipeline, get_pipeline
+
         self.provider = provider
         self.max_retries = max_retries
-        self.pipeline = pipeline or default_pipeline(skip_refine=skip_refine)
+
+        if isinstance(pipeline, _Pipeline):
+            self.pipeline = pipeline
+        elif isinstance(pipeline, str):
+            self.pipeline = get_pipeline(pipeline)
+        else:
+            self.pipeline = get_pipeline("fast" if skip_refine else "default")
 
     def run(self, raw_text: str, diagram_type: str = "auto") -> PipelineResult:
+        from ..pipeline import PipelineContext
+
         ctx = PipelineContext(
             raw_text=raw_text,
             diagram_type=diagram_type,

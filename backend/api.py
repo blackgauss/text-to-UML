@@ -40,6 +40,7 @@ class GenerateRequest(BaseModel):
     diagram_type: DiagramType = "auto"
     skip_refine: bool = False
     max_retries: int = 3
+    pipeline: str | None = None
 
 
 class GenerateResponse(BaseModel):
@@ -53,8 +54,10 @@ class GenerateResponse(BaseModel):
 def generate_diagram(req: GenerateRequest):
     try:
         provider = _get_provider()
+        pipeline_name = req.pipeline or os.environ.get("PIPELINE", "default")
         orchestrator = Orchestrator(
             provider=provider,
+            pipeline=pipeline_name,
             max_retries=req.max_retries,
             skip_refine=req.skip_refine,
         )
