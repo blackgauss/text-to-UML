@@ -10,6 +10,7 @@ const skipRefine = ref(false)
 const loading = ref(false)
 const error = ref('')
 const mermaidCode = ref('')
+const domain = ref('')
 
 const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000'
 
@@ -19,6 +20,7 @@ async function generate() {
   loading.value = true
   error.value = ''
   mermaidCode.value = ''
+  domain.value = ''
 
   try {
     const res = await fetch(`${API_BASE}/generate`, {
@@ -38,6 +40,7 @@ async function generate() {
 
     const data = await res.json()
     mermaidCode.value = data.code
+    domain.value = data.domain || ''
 
     await nextTick()
     await renderDiagram(data.code)
@@ -139,6 +142,7 @@ function copySource() {
       </section>
 
       <section v-if="mermaidCode" class="output">
+        <div v-if="domain" class="domain-tag">domain: {{ domain }}</div>
         <div id="diagram" class="diagram" />
 
         <div class="actions">
@@ -275,6 +279,12 @@ button:disabled {
 
 .output {
   margin-top: 1.5rem;
+}
+
+.domain-tag {
+  font-size: 0.75rem;
+  margin-bottom: 0.5rem;
+  color: #555;
 }
 
 .diagram {

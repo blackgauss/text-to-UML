@@ -3,10 +3,18 @@
 from __future__ import annotations
 
 import sys
+from dataclasses import dataclass
+from typing import Any
 
 from .data_models import MermaidArtifact
 from .llm import LLMProvider
 from .pipeline import Pipeline, PipelineContext, default_pipeline
+
+
+@dataclass
+class PipelineResult:
+    artifact: MermaidArtifact
+    metadata: dict[str, Any]
 
 
 class Orchestrator:
@@ -22,7 +30,7 @@ class Orchestrator:
         self.max_retries = max_retries
         self.pipeline = pipeline or default_pipeline(skip_refine=skip_refine)
 
-    def run(self, raw_text: str, diagram_type: str = "auto") -> MermaidArtifact:
+    def run(self, raw_text: str, diagram_type: str = "auto") -> PipelineResult:
         ctx = PipelineContext(
             raw_text=raw_text,
             diagram_type=diagram_type,
@@ -34,7 +42,7 @@ class Orchestrator:
             step(ctx, self.provider)
 
         assert ctx.artifact is not None, "Pipeline completed but produced no artifact"
-        return ctx.artifact
+        return PipelineResult(artifact=ctx.artifact, metadata=ctx.metadata)
 
 
 def _log(msg: str) -> None:

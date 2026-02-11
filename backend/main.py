@@ -27,10 +27,14 @@ def main() -> None:
     try:
         provider = build_provider()
         orchestrator = Orchestrator(provider=provider, max_retries=max_retries, skip_refine=skip_refine)
-        artifact = orchestrator.run(prompt, diagram_type=diagram_type)
+        result = orchestrator.run(prompt, diagram_type=diagram_type)
     except (DiagramGenerationError, ProviderError) as exc:
         print(f"Error: {exc}", file=sys.stderr)
         sys.exit(1)
+
+    artifact = result.artifact
+    domain = result.metadata.get("domain", "general")
+    print(f"[router] domain: {domain}", file=sys.stderr)
 
     out_dir = _ROOT / "outputs"
     out_dir.mkdir(exist_ok=True)

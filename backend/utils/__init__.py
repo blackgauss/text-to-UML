@@ -1,7 +1,7 @@
 from .data_models import DiagramGenerationError, DiagramRequest, MermaidArtifact, ProviderError
 from .env import load_dotenv
 from .llm import LLMProvider
-from .orchestrator import Orchestrator
+from .orchestrator import Orchestrator, PipelineResult
 from .pipeline import (
     Pipeline,
     PipelineContext,
@@ -24,6 +24,7 @@ __all__ = [
     "Orchestrator",
     "Pipeline",
     "PipelineContext",
+    "PipelineResult",
     "ProviderError",
     "build_provider",
     "default_pipeline",
