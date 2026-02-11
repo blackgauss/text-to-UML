@@ -5,8 +5,8 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-from text_to_uml.utils import DiagramGenerationError, Orchestrator, ProviderError, build_provider
-from text_to_uml.utils.env import load_dotenv
+from backend.utils import DiagramGenerationError, Orchestrator, ProviderError, build_provider
+from backend.utils.env import load_dotenv
 
 _ROOT = Path.cwd()
 

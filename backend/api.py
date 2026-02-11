@@ -8,14 +8,14 @@ import uvicorn
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-from text_to_uml.utils import (
+from backend.utils import (
     DiagramGenerationError,
     Orchestrator,
     ProviderError,
     build_provider,
 )
-from text_to_uml.utils.data_models import DiagramType
-from text_to_uml.utils.env import load_dotenv
+from backend.utils.data_models import DiagramType
+from backend.utils.env import load_dotenv
 
 app = FastAPI(title="text-to-uml")
 _provider = None
