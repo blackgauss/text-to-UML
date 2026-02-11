@@ -1,0 +1,16 @@
+[project]
+name = "text-to-uml"
+version = "0.1.0"
+description = "Convert natural language to valid Mermaid.js UML diagrams"
+requires-python = ">=3.12"
+dependencies = [
+    "pydantic>=2.0",
+    "openai>=1.0",
+]
+
+[project.scripts]
+text-to-uml = "text_to_uml.main:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
