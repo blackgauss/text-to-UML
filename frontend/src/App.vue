@@ -58,6 +58,38 @@ async function renderDiagram(code) {
     error.value = `Render error: ${e.message}`
   }
 }
+
+function getSvg() {
+  const el = document.getElementById('diagram')
+  return el ? el.innerHTML : ''
+}
+
+function openInNewTab() {
+  const svg = getSvg()
+  if (!svg) return
+  const blob = new Blob([svg], { type: 'image/svg+xml' })
+  window.open(URL.createObjectURL(blob), '_blank')
+}
+
+function saveToFile() {
+  const svg = getSvg()
+  if (!svg) return
+  const blob = new Blob([svg], { type: 'image/svg+xml' })
+  const a = document.createElement('a')
+  a.href = URL.createObjectURL(blob)
+  a.download = 'diagram.svg'
+  a.click()
+}
+
+const copied = ref(false)
+
+function copySource() {
+  if (!mermaidCode.value) return
+  navigator.clipboard.writeText(mermaidCode.value).then(() => {
+    copied.value = true
+    setTimeout(() => (copied.value = false), 1500)
+  })
+}
 </script>
 
 <template>
@@ -108,6 +140,15 @@ async function renderDiagram(code) {
 
       <section v-if="mermaidCode" class="output">
         <div id="diagram" class="diagram" />
+
+        <div class="actions">
+          <button class="action-btn" @click="openInNewTab">open in new tab</button>
+          <button class="action-btn" @click="saveToFile">save svg</button>
+          <button class="action-btn" @click="copySource">
+            {{ copied ? 'copied!' : 'copy source' }}
+          </button>
+        </div>
+
         <details>
           <summary>Mermaid source</summary>
           <pre>{{ mermaidCode }}</pre>
@@ -245,6 +286,27 @@ button:disabled {
 .diagram svg {
   max-width: 100%;
   height: auto;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.action-btn {
+  margin-left: 0;
+  font-weight: 400;
+  padding: 0.3rem 0.75rem;
+  background: #fff;
+  color: #000;
+  border: 1px solid #000;
+  font-size: 0.8rem;
+}
+
+.action-btn:hover:not(:disabled) {
+  background: #000;
+  color: #fff;
 }
 
 details {
