@@ -6,6 +6,7 @@ import os
 
 import uvicorn
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from backend.utils import (
@@ -18,6 +19,12 @@ from backend.utils.data_models import DiagramType
 from backend.utils.env import load_dotenv
 
 app = FastAPI(title="text-to-uml")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=os.environ.get("CORS_ORIGINS", "http://localhost:5173").split(","),
+    allow_methods=["POST"],
+    allow_headers=["*"],
+)
 _provider = None
 
 
