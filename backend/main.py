@@ -23,10 +23,16 @@ def main() -> None:
     max_retries = int(os.environ.get("MAX_RETRIES", "3"))
     diagram_type = os.environ.get("DIAGRAM_TYPE", "auto")
     skip_refine = os.environ.get("SKIP_REFINE", "false").lower() in ("true", "1", "yes")
+    pipeline_name = os.environ.get("PIPELINE", "default")
 
     try:
         provider = build_provider()
-        orchestrator = Orchestrator(provider=provider, max_retries=max_retries, skip_refine=skip_refine)
+        orchestrator = Orchestrator(
+            provider=provider,
+            pipeline=pipeline_name,
+            max_retries=max_retries,
+            skip_refine=skip_refine,
+        )
         result = orchestrator.run(prompt, diagram_type=diagram_type)
     except (DiagramGenerationError, ProviderError) as exc:
         print(f"Error: {exc}", file=sys.stderr)
