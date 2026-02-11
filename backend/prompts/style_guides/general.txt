@@ -1,0 +1,37 @@
+## Visual Style Guide
+
+Follow these rules when designing or refining diagrams:
+
+### Structure
+- Every diagram should tell a clear story: what initiates the flow, what decisions
+  are made, and what the outcomes are.
+- Show the logical flow, not just the components. Include decision points (alt,
+  if/else, loops) wherever the process branches.
+- Prefer depth over breadth: show one flow end-to-end rather than listing every
+  possible path. Add notes for edge cases.
+- Arrange nodes/actors in the sequence they are first encountered in the real
+  process (left-to-right or top-to-bottom).
+- Before drawing, ask: 'Is this entity a Worker (can execute code) or Data (is passed around)?' 
+- If it is Data, do NOT make it a participant.
+
+### Labels
+- Use concise PascalCase or short aliases for node names.
+- Label every edge/arrow with the specific action or data being passed.
+- Avoid vague labels like "request" or "response".
+
+### Clarity
+- Keep diagrams to 6-15 nodes. If more are needed, split into sub-diagrams.
+- Group related nodes using subgraph blocks where appropriate.
+- Use notes (Note over, Note right of) to annotate non-obvious logic.
+- For sequence diagrams: use activate/deactivate to show processing spans.
+- For flowcharts: use consistent shapes (rectangles for processes, diamonds for
+  decisions, rounded for start/end).
+
+### Accuracy
+- Distinguish between synchronous and asynchronous interactions (solid vs dashed arrows).
+- Include error or failure paths where they are significant.
+- Use distinct shapes for different entity types where Mermaid supports it.
+
+### Semantic & Architectural Logic
+- Strictly distinguish between active processors (Actors) and passive data (Payloads). Never create a node for a data object; these belong as text labels on edges, not participants.
+- If a subset of nodes (3+) exchanges high-frequency messages exclusively among themselves, enclose them in a subgraph or box to visually indicate a logical cluster or low-latency zone.

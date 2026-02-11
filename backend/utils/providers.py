@@ -2,13 +2,21 @@
 
 from __future__ import annotations
 
+import json
 import os
 
 import openai
 
 from .data_models import DiagramRequest, MermaidArtifact, ProviderError
 from .llm import LLMProvider
-from ..prompts import REFINER_SYSTEM, GENERATE_SYSTEM, REPAIR_SYSTEM
+from ..prompts import (
+    DOMAINS,
+    GENERATE_BASE,
+    REFINER_BASE,
+    REPAIR_SYSTEM,
+    ROUTER_SYSTEM,
+    get_style_guide,
+)
 
 _DEFAULT_TIMEOUT = 120.0
 _CLIENT_TIMEOUT = 60.0
@@ -39,11 +47,20 @@ class _OpenAICompatibleProvider(LLMProvider):
         except openai.APIError as exc:
             raise ProviderError(f"API error: {exc}") from exc
 
-    def refine_input(self, text: str) -> str:
-        return self._chat(REFINER_SYSTEM, text)
+    def route_domain(self, text: str) -> str:
+        raw = self._chat(ROUTER_SYSTEM, text, json_mode=True)
+        try:
+            domain = json.loads(raw).get("domain", "general")
+        except (json.JSONDecodeError, AttributeError):
+            return "general"
+        return domain if domain in DOMAINS else "general"
 
-    def generate_diagram(self, request: DiagramRequest) -> MermaidArtifact:
-        system = GENERATE_SYSTEM.format(diagram_type=request.diagram_type)
+    def refine_input(self, text: str, domain: str = "general") -> str:
+        system = REFINER_BASE + "\n\n" + get_style_guide(domain)
+        return self._chat(system, text)
+
+    def generate_diagram(self, request: DiagramRequest, domain: str = "general") -> MermaidArtifact:
+        system = GENERATE_BASE.format(diagram_type=request.diagram_type) + "\n\n" + get_style_guide(domain)
         raw = self._chat(system, request.raw_text, json_mode=True)
         return MermaidArtifact.model_validate_json(raw)
 

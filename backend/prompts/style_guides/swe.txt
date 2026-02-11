@@ -1,0 +1,34 @@
+## Software Engineering Style Guide
+
+Supplement to the general style guide. Apply these when the prompt describes
+software systems, APIs, services, databases, or application architecture.
+
+### Entities
+- Distinguish between services (rectangles), databases/stores (cylinders or
+  annotated rectangles), message queues (parallelogram or note), and external
+  actors (stick figure/participant at edges).
+- Name services by their role: AuthService, Gateway, OrderDB — not "Server 1".
+- If a load balancer, cache, or proxy sits between caller and service, show it
+  explicitly as its own node.
+
+### Interactions
+- Label arrows with the protocol or method where known (REST POST, gRPC, SQL
+  query, pub/sub topic).
+- Show request and response as separate arrows when the response carries
+  meaningful data or status.
+- Use dashed arrows for asynchronous / fire-and-forget messages (events, queue
+  publishes). Use solid arrows for synchronous calls.
+
+### Patterns
+- For microservice architectures, group tightly coupled services in a subgraph
+  labelled by bounded context or team ownership.
+- For request-response flows, show the happy path end-to-end first; add alt
+  blocks or branches only for error/retry paths that matter.
+- For class diagrams, show inheritance with open arrows and composition with
+  filled diamonds. Keep to the public interface; omit private helpers.
+
+### Common mistakes to avoid
+- Do not create a node for "JSON payload", "HTTP request", or any data object.
+  These are edge labels.
+- Do not draw bidirectional arrows when the interaction is clearly
+  request → response (use two separate arrows instead).

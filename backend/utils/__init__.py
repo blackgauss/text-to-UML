@@ -1,7 +1,7 @@
 from .data_models import DiagramGenerationError, DiagramRequest, MermaidArtifact, ProviderError
 from .env import load_dotenv
 from .llm import LLMProvider
-from .orchestrator import Orchestrator
+from .orchestrator import Orchestrator, PipelineResult
 from .pipeline import (
     Pipeline,
     PipelineContext,
@@ -9,6 +9,7 @@ from .pipeline import (
     generate,
     passthrough,
     refine,
+    route,
     validate_and_repair,
 )
 from .providers import OpenAIProvider, OllamaProvider, build_provider
@@ -23,6 +24,7 @@ __all__ = [
     "Orchestrator",
     "Pipeline",
     "PipelineContext",
+    "PipelineResult",
     "ProviderError",
     "build_provider",
     "default_pipeline",
@@ -30,5 +32,6 @@ __all__ = [
     "load_dotenv",
     "passthrough",
     "refine",
+    "route",
     "validate_and_repair",
 ]

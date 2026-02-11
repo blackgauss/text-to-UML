@@ -1,0 +1,8 @@
+Classify the domain of the following text into exactly one category.
+
+Respond with ONLY a JSON object: {"domain": "<category>"}
+
+Categories:
+- "swe" — software engineering, APIs, web services, databases, application architecture
+- "ml" — machine learning, data science, model training, inference, data pipelines
+- "general" — anything that does not clearly fit the above

@@ -46,6 +46,7 @@ class GenerateResponse(BaseModel):
     code: str
     explanation: str
     is_valid: bool
+    domain: str = "general"
 
 
 @app.post("/generate", response_model=GenerateResponse)
@@ -57,16 +58,17 @@ def generate_diagram(req: GenerateRequest):
             max_retries=req.max_retries,
             skip_refine=req.skip_refine,
         )
-        artifact = orchestrator.run(req.text, diagram_type=req.diagram_type)
+        result = orchestrator.run(req.text, diagram_type=req.diagram_type)
     except ProviderError as exc:
         raise HTTPException(status_code=502, detail=str(exc))
     except DiagramGenerationError as exc:
         raise HTTPException(status_code=422, detail=str(exc))
 
     return GenerateResponse(
-        code=artifact.code,
-        explanation=artifact.explanation,
-        is_valid=artifact.is_valid,
+        code=result.artifact.code,
+        explanation=result.artifact.explanation,
+        is_valid=result.artifact.is_valid,
+        domain=result.metadata.get("domain", "general"),
     )
 
 
