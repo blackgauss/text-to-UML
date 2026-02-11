@@ -6,24 +6,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from text_to_uml.utils import DiagramGenerationError, Orchestrator, ProviderError, build_provider
+from text_to_uml.utils.env import load_dotenv
 
-_ROOT = Path(__file__).resolve().parents[2]
-
-
-def _load_dotenv() -> None:
-    env_path = _ROOT / ".env"
-    if not env_path.exists():
-        return
-    for line in env_path.read_text().splitlines():
-        line = line.strip()
-        if not line or line.startswith("#") or "=" not in line:
-            continue
-        key, _, value = line.partition("=")
-        os.environ.setdefault(key.strip(), value.strip())
+_ROOT = Path.cwd()
 
 
 def main() -> None:
-    _load_dotenv()
+    load_dotenv()
 
     prompt = " ".join(sys.argv[1:]) if len(sys.argv) > 1 else None
     if not prompt:

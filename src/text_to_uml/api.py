@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import os
-from pathlib import Path
 
 import uvicorn
 from fastapi import FastAPI, HTTPException
@@ -16,8 +15,7 @@ from text_to_uml.utils import (
     build_provider,
 )
 from text_to_uml.utils.data_models import DiagramType
-
-_ROOT = Path(__file__).resolve().parents[2]
+from text_to_uml.utils.env import load_dotenv
 
 app = FastAPI(title="text-to-uml")
 _provider = None
@@ -65,22 +63,23 @@ def generate_diagram(req: GenerateRequest):
     )
 
 
-def _load_dotenv() -> None:
-    env_path = _ROOT / ".env"
-    if not env_path.exists():
-        return
-    for line in env_path.read_text().splitlines():
-        line = line.strip()
-        if not line or line.startswith("#") or "=" not in line:
-            continue
-        key, _, value = line.partition("=")
-        os.environ.setdefault(key.strip(), value.strip())
+def _parse_port(default: int = 8000) -> int:
+    raw = os.environ.get("API_PORT")
+    if not raw or not raw.strip():
+        return default
+    try:
+        port = int(raw)
+    except ValueError:
+        return default
+    if not (0 < port < 65536):
+        return default
+    return port
 
 
 def serve() -> None:
-    _load_dotenv()
+    load_dotenv()
     host = os.environ.get("API_HOST", "127.0.0.1")
-    port = int(os.environ.get("API_PORT", "8000"))
+    port = _parse_port()
     uvicorn.run(app, host=host, port=port)
 
 
