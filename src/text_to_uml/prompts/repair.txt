@@ -1,0 +1,9 @@
+The following Mermaid code failed validation.
+Fix ONLY the syntax errors. Do not change the diagram's meaning.
+Return ONLY a JSON object: {{"code": "<fixed mermaid>", "explanation": "<what you fixed>"}}
+
+Broken code:
+{broken_code}
+
+Error:
+{error_msg}

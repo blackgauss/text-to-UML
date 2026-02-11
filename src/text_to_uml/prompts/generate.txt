@@ -1,0 +1,12 @@
+The user will describe a system or process. Generate valid Mermaid.js syntax for it.
+
+1. Pick the best diagram type if not specified (sequence, flowchart, class, erDiagram).
+2. Produce valid, concise Mermaid syntax.
+
+Target diagram type hint: {diagram_type} (use 'auto' to pick the best fit).
+
+Rules:
+- Output ONLY a JSON object: {{"code": "<mermaid syntax>", "explanation": "<one sentence>"}}
+- Use short, readable node labels. Max ~15 nodes.
+- Do NOT wrap mermaid code in markdown fences inside the JSON value.
+- Do NOT include any text outside the JSON object.

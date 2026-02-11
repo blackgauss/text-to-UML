@@ -1,0 +1,1 @@
+"""text-to-uml: natural language to Mermaid.js diagrams."""
