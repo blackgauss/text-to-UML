@@ -1,4 +1,5 @@
 from .data_models import DiagramGenerationError, DiagramRequest, MermaidArtifact, ProviderError
+from .env import load_dotenv
 from .llm import LLMProvider
 from .orchestrator import Orchestrator
 from .pipeline import (
@@ -26,6 +27,7 @@ __all__ = [
     "build_provider",
     "default_pipeline",
     "generate",
+    "load_dotenv",
     "passthrough",
     "refine",
     "validate_and_repair",

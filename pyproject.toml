@@ -6,10 +6,13 @@ requires-python = ">=3.12"
 dependencies = [
     "pydantic>=2.0",
     "openai>=1.0",
+    "fastapi>=0.115.0",
+    "uvicorn>=0.32.0",
 ]
 
 [project.scripts]
 text-to-uml = "text_to_uml.main:main"
+text-to-uml-api = "text_to_uml.api:serve"
 
 [build-system]
 requires = ["hatchling"]
